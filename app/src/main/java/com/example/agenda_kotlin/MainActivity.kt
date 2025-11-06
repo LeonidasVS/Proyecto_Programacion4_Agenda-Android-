@@ -7,14 +7,22 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.agenda_kotlin.databinding.ActivityMainBinding
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
     private  lateinit var binding: ActivityMainBinding
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         binding=ActivityMainBinding.inflate(layoutInflater)
+
+        firebaseAuth=FirebaseAuth.getInstance()
+
+        if(firebaseAuth.currentUser!=null){
+            irDashboard()
+        }
 
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -36,5 +44,12 @@ class MainActivity : AppCompatActivity() {
             val intent=Intent(applicationContext, RegistroActivity::class.java)
             startActivity(intent)
         }
+
+    }
+
+    private fun irDashboard(){
+        val intent=Intent(this, DashboardActivity::class.java)
+        startActivity(intent)
+        finishAffinity()
     }
 }
