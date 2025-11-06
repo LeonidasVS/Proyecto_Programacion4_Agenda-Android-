@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Agenda_Kotlin">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegistroActivity"
             android:exported="false" />
         <activity

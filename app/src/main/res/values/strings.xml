@@ -16,6 +16,8 @@
     <!-- Titulo Registro Activity -->
     <string name="crear_cuenta">Crear una Cuenta</string>
 
+    <!-- Titulo Registro Activity -->
+    <string name="login_subtitulo">Lleva el control de tus materias, tareas o examenes desde una sola app. ¡Tu potencial es grande!</string>
 
 
 </resources>
