@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_height="match_parent"
+    tools:context=".PerfilActivity"
+    android:background="@color/blanco">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Cuenta De Usuario"
+        android:textAlignment="center"
+        android:textColor="@color/azul"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/AvatarUsuario"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:textColor="@color/blanco"
+            android:gravity="center"
+            android:text="A"
+            android:textSize="80dp"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/ImagePerfil"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_marginTop="-110dp"
+            android:scaleType="centerCrop"
+            android:clickable="true"
+            android:visibility="visible"
+            app:shapeAppearanceOverlay="@style/CircularImage" />
+
+        <TextView
+            android:id="@+id/NombreUsuario"
+            android:layout_width="282dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Nombre Usuario"
+            android:textAlignment="center"
+            android:textColor="@color/negro"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/carreraUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_light"
+            android:text="carrera"
+            android:textAlignment="center"
+            android:textColor="@color/grisAzulado"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/correoUsuario"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/poppins_light"
+            android:text="ejemplo@gmail.com"
+            android:textAlignment="center"
+            android:textColor="@color/grisAzulado"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="30dp"
+        android:gravity="center">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_Editar_perfil"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:drawableEnd="@drawable/ic_editar"
+            android:text="Editar Cuenta"
+            android:textColor="@color/negro"
+            android:backgroundTint="@color/blanco"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:cornerRadius="4dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnElminarCuenta"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="@color/blanco"
+            android:drawableEnd="@drawable/ic_eliminar_cuenta"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Eliminar Cuenta"
+            android:textColor="@color/negro"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            app:cornerRadius="4dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/cerrarSesion"
+            android:layout_width="325dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:backgroundTint="@color/azul"
+            android:drawableEnd="@drawable/ic_cerrar_sesion"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Cerrar Sesion"
+            android:textSize="16sp"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>
