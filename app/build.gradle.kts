@@ -17,6 +17,11 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    //Para el funcionamiento de Binding
+    buildFeatures {
+        viewBinding=true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
