@@ -13,4 +13,9 @@
     <!-- Subtitulo Principal app -->
     <string name="sub_titulo_principal">Una agenda estudiantil diseñada para ayudarte a organizar tareas, clases y exámenes.</string>
 
+    <!-- Titulo Registro Activity -->
+    <string name="crear_cuenta">Crear una Cuenta</string>
+
+
+
 </resources>
