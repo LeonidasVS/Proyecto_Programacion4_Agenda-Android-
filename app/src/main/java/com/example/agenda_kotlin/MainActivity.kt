@@ -25,8 +25,15 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
+        //Enlazar al login
         binding.btnLogin.setOnClickListener {
-            val intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+
+        //Enlazar para registrar una cuenta
+        binding.btnRegistrar.setOnClickListener {
+            val intent=Intent(applicationContext, RegistroActivity::class.java)
             startActivity(intent)
         }
     }
