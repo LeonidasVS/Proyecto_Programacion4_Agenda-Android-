@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Agenda_Kotlin</string>
+    <string name="app_name">PlanTime</string>
 
     <!-- Bottom Navigation View -->
     <string name="Notas">Notas</string>
