@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/poppins_semibold"
-        android:text="Cuenta De Usuario"
+        android:text="@string/titulo_perfil_usuario"
         android:textAlignment="center"
         android:textColor="@color/azul"
         android:textSize="22dp"
