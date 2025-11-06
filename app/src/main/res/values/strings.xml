@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Agenda_Kotlin</string>
+
+    <!-- Bottom Navigation View -->
+    <string name="Notas">Notas</string>
+    <string name="Recordatorios">Recordatorios</string>
+    <string name="Contactos">Contactos</string>
+    <string name="Calendario">Calendario</string>
+
+    <!-- Titulo Principal app -->
+    <string name="t_titulo_principal">¡Organiza tu dia con StudyPlanner!</string>
+
+    <!-- Subtitulo Principal app -->
+    <string name="sub_titulo_principal">Una agenda estudiantil diseñada para ayudarte a organizar tareas, clases y exámenes.</string>
+
+</resources>
