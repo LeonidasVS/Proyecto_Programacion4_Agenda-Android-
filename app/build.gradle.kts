@@ -57,7 +57,8 @@ dependencies {
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
     implementation("com.google.android.gms:play-services-auth:21.4.0")
 
-
+    //Avatar del usuario
+    implementation("com.squareup.picasso:picasso:2.8")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

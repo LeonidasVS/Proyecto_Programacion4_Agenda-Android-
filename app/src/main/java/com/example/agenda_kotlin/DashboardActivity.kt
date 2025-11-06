@@ -2,6 +2,7 @@ package com.example.agenda_kotlin
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -9,7 +10,10 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.agenda_kotlin.Fragmentos.FragmentCalendario
 import com.example.agenda_kotlin.Fragmentos.FragmentContacto
 import com.example.agenda_kotlin.Fragmentos.FragmentRecordatorio
+import com.example.agenda_kotlin.Objeto.Avatar
 import com.example.agenda_kotlin.databinding.ActivityDashboardBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.squareup.picasso.Picasso
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -53,14 +57,60 @@ class DashboardActivity : AppCompatActivity() {
                     false
                 }
             }
-
         }
+
+        avatarUsuario()
 
         binding.btnPerfil.setOnClickListener{
             val intent=Intent(this, PerfilActivity::class.java)
             startActivity(intent)
         }
     }
+
+    private fun avatarUsuario() {
+        val user = FirebaseAuth.getInstance().currentUser
+
+        if (user?.photoUrl != null) {
+            user.photoUrl?.let { uri ->
+
+                // Guardar la imagen en el objeto Avatar
+                Avatar.imagenUri = uri
+
+                Picasso.get()
+                    .load(uri)
+                    .into(binding.btnGoogleImg)
+
+                binding.btnPerfil.visibility = View.GONE
+            }
+        } else {
+            // Obtener la primera letra del email
+            val displayName = user?.email
+            Avatar.letra = displayName?.firstOrNull()?.toString()?.uppercase() ?: "?"
+
+            binding.btnPerfil.text = Avatar.letra
+
+            if (Avatar.colorAvatar == null) {
+                val random = java.util.Random()
+                Avatar.colorAvatar = android.graphics.Color.rgb(
+                    random.nextInt(256),
+                    random.nextInt(256),
+                    random.nextInt(256)
+                )
+            }
+
+            // Crear un drawable circular con el color del avatar
+            val drawable = android.graphics.drawable.GradientDrawable()
+            drawable.shape = android.graphics.drawable.GradientDrawable.OVAL
+            drawable.setColor(Avatar.colorAvatar!!)
+
+            // Asignar el drawable como fondo del TextView
+            binding.btnPerfil.background = drawable
+
+            // Ocultar el ImageView del perfil
+            binding.btnGoogleImg.visibility = View.GONE
+        }
+    }
+
 
     private fun verFragmetoCalendario() {
         binding.tvTitulo.text = "Calendario"
