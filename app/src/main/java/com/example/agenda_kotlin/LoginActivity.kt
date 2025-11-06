@@ -50,9 +50,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun iniciarSesionConEmail() {
 
-        progressDialog.setMessage("Buscando Usuario")
-        progressDialog.show()
-
         correoUsuario=binding.inputCorreo.text.toString().trim()
         passwordUsuario=binding.inputPassword.text.toString().trim()
 
@@ -63,6 +60,9 @@ class LoginActivity : AppCompatActivity() {
             binding.inputPassword.error="Contraseña mayor a 6 digitos"
             binding.inputPassword.requestFocus()
         }else{
+
+            progressDialog.setMessage("Buscando Usuario")
+            progressDialog.show()
 
             auth.signInWithEmailAndPassword(correoUsuario,passwordUsuario)
                 .addOnCompleteListener{ task ->
@@ -78,13 +78,16 @@ class LoginActivity : AppCompatActivity() {
                                     startActivity(intent)
                                     finishAffinity()
                                 }else{
+                                    progressDialog.dismiss()
                                     Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
                                 }
                             }
                             .addOnFailureListener { e->
+                                progressDialog.dismiss()
                                 Toast.makeText(this, "Error al obtener los datos y ${e.message}", Toast.LENGTH_SHORT).show()
                             }
                     }else{
+                        progressDialog.dismiss()
                         Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
                     }
                 }

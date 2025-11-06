@@ -119,7 +119,7 @@
             app:cornerRadius="4dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/cerrarSesion"
+            android:id="@+id/btn_cerrarSesion"
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"

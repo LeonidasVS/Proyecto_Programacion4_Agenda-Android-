@@ -55,6 +55,11 @@ class DashboardActivity : AppCompatActivity() {
             }
 
         }
+
+        binding.btnPerfil.setOnClickListener{
+            val intent=Intent(this, PerfilActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun verFragmetoCalendario() {

@@ -80,7 +80,7 @@ class RegistroActivity : AppCompatActivity() {
             binding.inputMail.error="¡Ingresa un correo valido!"
             binding.inputMail.requestFocus()
         }else if(password.isEmpty() || password.length>6){
-            binding.inputPass.error="Contraseña mayor de 6 caracteres"
+            binding.inputPass.error="Contraseña mayor de 6 digitos"
             binding.inputPass.requestFocus()
         }else if(carrera.isEmpty() || carrera=="-- Seleccione una carrera --"){
             Toast.makeText(this, "Selecciona una carrea", Toast.LENGTH_SHORT).show()
