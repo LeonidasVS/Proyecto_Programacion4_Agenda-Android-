@@ -1,34 +1,34 @@
 {
   "project_info": {
-    "project_number": "274088278139",
-    "firebase_url": "https://agenda-kotlin-87c0b-default-rtdb.firebaseio.com",
-    "project_id": "agenda-kotlin-87c0b",
-    "storage_bucket": "agenda-kotlin-87c0b.firebasestorage.app"
+    "project_number": "327416947965",
+    "firebase_url": "https://proyectoprogramacion4-d307d-default-rtdb.firebaseio.com",
+    "project_id": "proyectoprogramacion4-d307d",
+    "storage_bucket": "proyectoprogramacion4-d307d.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:274088278139:android:bc48dc407a38977a6a8ade",
+        "mobilesdk_app_id": "1:327416947965:android:59cbc284379dd6419a4a94",
         "android_client_info": {
           "package_name": "com.example.agenda_kotlin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "274088278139-o1053ifkdfri87qsu8jt41kjqmspro58.apps.googleusercontent.com",
+          "client_id": "327416947965-ocugjejc0boc52vc1u7lf1b5ltc3fi3f.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCRqTWuM86tqeKbHeOTZFAODl5YpgDmLkc"
+          "current_key": "AIzaSyCAlVVGq3SUWyQQ6wEXxau4vV_2L7RF1FA"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "274088278139-o1053ifkdfri87qsu8jt41kjqmspro58.apps.googleusercontent.com",
+              "client_id": "327416947965-ocugjejc0boc52vc1u7lf1b5ltc3fi3f.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

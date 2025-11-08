@@ -2,15 +2,20 @@ package com.example.agenda_kotlin
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.agenda_kotlin.Objeto.Avatar
 import com.example.agenda_kotlin.databinding.ActivityPerfilBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import com.squareup.picasso.Picasso
 
 class PerfilActivity : AppCompatActivity() {
 
@@ -46,11 +51,15 @@ class PerfilActivity : AppCompatActivity() {
         }
 
         binding.btnCerrarSesion.setOnClickListener {
-            progressDialog.setMessage("¡Cerrando Sesion!")
-            progressDialog.show()  // 🔹 Mostrar el diálogo
             cerrarSesion()
         }
+
+        binding.btnEditarPerfil.setOnClickListener {
+            val intent=Intent(this, ActualizarPerfilActivity::class.java)
+            startActivity(intent)
+        }
     }
+
 
     private fun buscarUsuarioLogeado(uid: String) {
         progressDialog.setMessage("¡Cargando Usuario!")
@@ -71,6 +80,9 @@ class PerfilActivity : AppCompatActivity() {
                     binding.correoUsuario.text="${correo}"
                     binding.carreraUsuario.text="${carrera}"
 
+                    //Cagar foto de usuario
+                    cargarFotoUsuario()
+
                 } else {
                     Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
                 }
@@ -79,6 +91,22 @@ class PerfilActivity : AppCompatActivity() {
                 progressDialog.dismiss()  // 🔹 Ocultar si falla
                 Toast.makeText(this, "Error al obtener los datos", Toast.LENGTH_SHORT).show()
             }
+    }
+
+    private fun cargarFotoUsuario() {
+
+        if (Avatar.imagenUri != null) {
+            Picasso.get().load(Avatar.imagenUri).into(binding.ImagePerfil)
+        } else {
+            val drawable = GradientDrawable()
+            drawable.shape = GradientDrawable.OVAL
+            drawable.setColor(Avatar.colorAvatar ?: Color.GRAY)
+            binding.AvatarUsuario.background = drawable
+
+            binding.AvatarUsuario.text = Avatar.letra
+            binding.ImagePerfil.visibility = View.GONE
+        }
+
     }
 
     private fun cerrarSesion() {
