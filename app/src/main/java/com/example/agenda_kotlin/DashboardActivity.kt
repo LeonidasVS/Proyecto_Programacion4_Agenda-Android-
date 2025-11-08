@@ -23,6 +23,7 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding=ActivityDashboardBinding.inflate(layoutInflater)
+
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -62,6 +63,11 @@ class DashboardActivity : AppCompatActivity() {
         avatarUsuario()
 
         binding.btnPerfil.setOnClickListener{
+            val intent=Intent(this, PerfilActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.btnGoogleImg.setOnClickListener{
             val intent=Intent(this, PerfilActivity::class.java)
             startActivity(intent)
         }
@@ -150,4 +156,5 @@ class DashboardActivity : AppCompatActivity() {
         startActivity(intent)
         true
     }
+
 }

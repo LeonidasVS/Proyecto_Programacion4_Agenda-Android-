@@ -4,8 +4,10 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -35,6 +37,9 @@ class RegistroActivity : AppCompatActivity() {
             insets
         }
 
+        //OultarBotonDeGoogle
+        binding.botonRegistrarConGoogle.visibility= View.GONE
+
         //Cargar el spinner
         cargarCarreras()
 
@@ -50,7 +55,15 @@ class RegistroActivity : AppCompatActivity() {
             validarInformacion()
         }
 
+        //Datos De Login
+        val desdeGoogle=intent.getBooleanExtra("datosDeGoogle", false)
+
+        if(desdeGoogle){
+            cargarDatosDeGoogle()
+        }
+
     }
+
 
     //Varibles globales
     private var nombres=""
@@ -89,6 +102,32 @@ class RegistroActivity : AppCompatActivity() {
             registrarUsuarioEmail()
         }
     }
+
+    //Cargar los datos que vienen de google
+    private fun cargarDatosDeGoogle() {
+
+        val user = FirebaseAuth.getInstance().currentUser
+        if(user!=null){
+            val nombre = intent.getStringExtra("nombre") ?: ""
+            val correo = intent.getStringExtra("correo") ?: ""
+
+            // 🔹 Separar el nombre y apellido
+            val partes = nombre.trim().split("\\s+".toRegex())
+            val name = if (partes.size >= 2) "${partes[0]} ${partes[1]}" else partes.getOrNull(0) ?: ""
+            val apellido = when {
+                partes.size >= 4 -> "${partes[2]} ${partes[3]}"
+                partes.size == 3 -> partes[2]
+                else -> ""
+            }
+
+            binding.inputNombre.setText(name)
+            binding.inputApellido.setText(apellido)
+            binding.inputMail.setText(correo)
+
+            deshabilitarInput()
+        }
+    }
+
 
     private fun registrarUsuarioEmail() {
         progressDialog.setMessage("Creando Usuario")
@@ -161,5 +200,14 @@ class RegistroActivity : AppCompatActivity() {
         autoComplete.setOnClickListener {
             autoComplete.showDropDown()
         }
+    }
+
+    private fun deshabilitarInput() {
+        binding.inputNombre.isEnabled=false
+        binding.inputApellido.isEnabled=false
+        binding.inputMail.isEnabled=false
+        binding.layoutPassword.visibility= View.GONE
+        binding.botonRegistrar.visibility= View.GONE
+        binding.botonRegistrarConGoogle.visibility= View.VISIBLE
     }
 }

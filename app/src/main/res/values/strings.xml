@@ -22,9 +22,11 @@
     <!-- TItulo perfil de usuario -->
     <string name="titulo_perfil_usuario">Perfil de Usuario</string>
 
+    <!-- TItulo Editar perfil de usuario -->
     <string name="titulo_editar_perfil">Editar Perfil De Usuario</string>
 
 
+    <string name="id_client_google">327416947965-ocugjejc0boc52vc1u7lf1b5ltc3fi3f.apps.googleusercontent.com</string>
 
 
 </resources>

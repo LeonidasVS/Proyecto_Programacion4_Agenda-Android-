@@ -5,11 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.agenda_kotlin.databinding.ActivityLoginBinding
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
@@ -19,6 +25,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     lateinit var referenciBD:DatabaseReference
     lateinit var progressDialog: ProgressDialog
+
+    lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +51,20 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             iniciarSesionConEmail()
         }
+
+        // Configurar Google Sign-In
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.id_client_google))
+            .requestEmail()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+
+        // Evento: iniciar sesión con Google
+        binding.btnLoginGoogle.setOnClickListener {
+            iniciarSesionConGoogle()
+        }
+
     }
 
     private var correoUsuario="";
@@ -92,5 +114,63 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
         }
+    }
+
+    //INicio de sesion de google
+    private fun iniciarSesionConGoogle(){
+        // Cerrar sesión de Google para forzar la selección de cuenta
+        mGoogleSignInClient.signOut().addOnCompleteListener(this) {
+            val googleSignIntent = mGoogleSignInClient.signInIntent
+            googleSignInActivityResultLauncher.launch(googleSignIntent)
+        }
+    }
+
+    private val googleSignInActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { resultado ->
+        if (resultado.resultCode == RESULT_OK) {
+            val data = resultado.data
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                val cuenta = task.getResult(ApiException::class.java)
+                autenticarCuentaGoogle(cuenta.idToken)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(this, "Inicio de sesión cancelado", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun autenticarCuentaGoogle(idToken: String?) {
+        val credencial = GoogleAuthProvider.getCredential(idToken, null)
+        progressDialog.setMessage("Autenticando...")
+        progressDialog.show()
+
+        auth.signInWithCredential(credencial)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                val usuario=auth.currentUser
+
+                val intent= Intent(this, RegistroActivity::class.java)
+
+                //Datos enviados a registro Activity
+                intent.putExtra("uid",usuario?.uid)
+                intent.putExtra("nombre",usuario?.displayName)
+                intent.putExtra("correo",usuario?.email)
+
+                //indicarle a la actividad que son datos de google
+                intent.putExtra("datosDeGoogle",true)
+
+                //Enviar datos a registro activity
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+
+                startActivity(intent)
+
+            }
+            .addOnFailureListener { e ->
+                progressDialog.dismiss()
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

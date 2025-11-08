@@ -85,6 +85,7 @@ class PerfilActivity : AppCompatActivity() {
 
                 } else {
                     Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
+                    cerrarSesion()
                 }
             }
             .addOnFailureListener {

@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         //Enlazar para registrar una cuenta
         binding.btnRegistrar.setOnClickListener {
             val intent=Intent(applicationContext, RegistroActivity::class.java)
+//            intent.putExtra("ocultar_boton", true); //ocultar el boton
             startActivity(intent)
         }
 
