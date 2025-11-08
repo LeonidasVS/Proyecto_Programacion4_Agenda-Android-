@@ -7,7 +7,6 @@ import android.util.Patterns
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.agenda_kotlin.databinding.ActivityRegistroBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
 
 class RegistroActivity : AppCompatActivity() {
@@ -23,11 +23,15 @@ class RegistroActivity : AppCompatActivity() {
     private lateinit var firebaseAuth: FirebaseAuth
     private lateinit var progressDialog: ProgressDialog
 
+    // Variables para datos de Google
+    private var idTokenGoogle: String? = null
+    private var esNuevoUsuarioGoogle = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        //Hacer conexion con el layou
+        //Hacer conexion con el layout
         binding=ActivityRegistroBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
@@ -37,7 +41,7 @@ class RegistroActivity : AppCompatActivity() {
             insets
         }
 
-        //OultarBotonDeGoogle
+        //Ocultar Boton De Google
         binding.botonRegistrarConGoogle.visibility= View.GONE
 
         //Cargar el spinner
@@ -59,13 +63,20 @@ class RegistroActivity : AppCompatActivity() {
         val desdeGoogle=intent.getBooleanExtra("datosDeGoogle", false)
 
         if(desdeGoogle){
+            // Guardar el idToken para usarlo después
+            idTokenGoogle = intent.getStringExtra("idToken")
+            esNuevoUsuarioGoogle = intent.getBooleanExtra("esNuevoUsuario", false)
             cargarDatosDeGoogle()
         }
 
+        // Evento para el botón de registrar con Google
+        binding.botonRegistrarConGoogle.setOnClickListener {
+            validarYRegistrarConGoogle()
+        }
     }
 
 
-    //Varibles globales
+    //Variables globales
     private var nombres=""
     private var apellidos=""
     private var correo=""
@@ -92,40 +103,57 @@ class RegistroActivity : AppCompatActivity() {
         }else if(!Patterns.EMAIL_ADDRESS.matcher(correo).matches()){
             binding.inputMail.error="¡Ingresa un correo valido!"
             binding.inputMail.requestFocus()
-        }else if(password.isEmpty() || password.length>6){
+        }else if(password.isEmpty() || password.length<6){
             binding.inputPass.error="Contraseña mayor de 6 digitos"
             binding.inputPass.requestFocus()
         }else if(carrera.isEmpty() || carrera=="-- Seleccione una carrera --"){
-            Toast.makeText(this, "Selecciona una carrea", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Selecciona una carrera", Toast.LENGTH_SHORT).show()
         }else{
             //Mandar a llamar la funcion para que cree el usuario si todos los campos cumplen
             registrarUsuarioEmail()
         }
     }
 
+    //Validar información para registro con Google
+    private fun validarYRegistrarConGoogle() {
+        nombres=binding.inputNombre.text.toString().trim()
+        apellidos=binding.inputApellido.text.toString().trim()
+        correo=binding.inputMail.text.toString().trim()
+        carrera=binding.spinnerCarrera.text.toString().trim()
+
+        if(nombres.isEmpty()){
+            binding.inputNombre.error="Ingresa un Nombre"
+            binding.inputNombre.requestFocus()
+        }else if(apellidos.isEmpty()){
+            binding.inputApellido.error="Ingresa un apellido"
+            binding.inputApellido.requestFocus()
+        }else if(carrera.isEmpty() || carrera=="-- Seleccione una carrera --"){
+            Toast.makeText(this, "Selecciona una carrera", Toast.LENGTH_SHORT).show()
+        }else{
+            // AHORA SÍ autenticamos con Google y guardamos en la BD
+            registrarUsuarioConGoogle()
+        }
+    }
+
     //Cargar los datos que vienen de google
     private fun cargarDatosDeGoogle() {
+        val nombre = intent.getStringExtra("nombre") ?: ""
+        val correo = intent.getStringExtra("correo") ?: ""
 
-        val user = FirebaseAuth.getInstance().currentUser
-        if(user!=null){
-            val nombre = intent.getStringExtra("nombre") ?: ""
-            val correo = intent.getStringExtra("correo") ?: ""
-
-            // 🔹 Separar el nombre y apellido
-            val partes = nombre.trim().split("\\s+".toRegex())
-            val name = if (partes.size >= 2) "${partes[0]} ${partes[1]}" else partes.getOrNull(0) ?: ""
-            val apellido = when {
-                partes.size >= 4 -> "${partes[2]} ${partes[3]}"
-                partes.size == 3 -> partes[2]
-                else -> ""
-            }
-
-            binding.inputNombre.setText(name)
-            binding.inputApellido.setText(apellido)
-            binding.inputMail.setText(correo)
-
-            deshabilitarInput()
+        // 🔹 Separar el nombre y apellido
+        val partes = nombre.trim().split("\\s+".toRegex())
+        val name = if (partes.size >= 2) "${partes[0]} ${partes[1]}" else partes.getOrNull(0) ?: ""
+        val apellido = when {
+            partes.size >= 4 -> "${partes[2]} ${partes[3]}"
+            partes.size == 3 -> partes[2]
+            else -> ""
         }
+
+        binding.inputNombre.setText(name)
+        binding.inputApellido.setText(apellido)
+        binding.inputMail.setText(correo)
+
+        deshabilitarInput()
     }
 
 
@@ -135,7 +163,7 @@ class RegistroActivity : AppCompatActivity() {
 
         firebaseAuth.createUserWithEmailAndPassword(correo, password)
             .addOnCompleteListener {
-                crearUsuarioEnFireBase()
+                crearUsuarioEnFireBase("Email")
             }
             .addOnFailureListener { e->
                 progressDialog.dismiss()
@@ -143,33 +171,56 @@ class RegistroActivity : AppCompatActivity() {
             }
     }
 
-    private fun crearUsuarioEnFireBase(){
+    private fun registrarUsuarioConGoogle() {
+        if (idTokenGoogle == null) {
+            Toast.makeText(this, "Error: No se encontró token de Google", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        progressDialog.setMessage("Registrando con Google...")
+        progressDialog.show()
+
+        // AQUÍ autenticamos por primera vez con Firebase
+        val credencial = GoogleAuthProvider.getCredential(idTokenGoogle, null)
+
+        firebaseAuth.signInWithCredential(credencial)
+            .addOnSuccessListener {
+                // Usuario autenticado, ahora guardamos en la BD
+                crearUsuarioEnFireBase("Google")
+            }
+            .addOnFailureListener { e ->
+                progressDialog.dismiss()
+                Toast.makeText(this, "Error al autenticar: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun crearUsuarioEnFireBase(proveedor: String){
         val uid=firebaseAuth.uid
-        val nombres=nombres
-        val correo=firebaseAuth.currentUser!!.email
+        val correoActual=firebaseAuth.currentUser!!.email
 
         val enviarDatos=HashMap<String,Any>()
         enviarDatos["uid"]="${uid}"
         enviarDatos["nombre"]="${nombres}"
         enviarDatos["apellido"]="${apellidos}"
-        enviarDatos["correo"]="${correo}"
+        enviarDatos["correo"]="${correoActual}"
         enviarDatos["carrera"]="${carrera}"
-        enviarDatos["proveedor"]="Email"
+        enviarDatos["proveedor"]=proveedor
 
         //Guardar la informacion
-        val refencia=FirebaseDatabase.getInstance().getReference("users")
-        refencia.child(uid!!)
+        val referencia=FirebaseDatabase.getInstance().getReference("users")
+        referencia.child(uid!!)
             .setValue(enviarDatos)
             .addOnCompleteListener {
                 progressDialog.dismiss()
+                Toast.makeText(this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, DashboardActivity::class.java)
                 startActivity(intent)
+                finishAffinity()
             }
             .addOnFailureListener { e->
                 progressDialog.dismiss()
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
-
     }
 
     private fun cargarCarreras() {

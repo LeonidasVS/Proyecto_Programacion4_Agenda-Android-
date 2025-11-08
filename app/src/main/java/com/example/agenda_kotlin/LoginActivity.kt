@@ -116,7 +116,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    //INicio de sesion de google
+    //Inicio de sesion de google
     private fun iniciarSesionConGoogle(){
         // Cerrar sesión de Google para forzar la selección de cuenta
         mGoogleSignInClient.signOut().addOnCompleteListener(this) {
@@ -133,7 +133,7 @@ class LoginActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val cuenta = task.getResult(ApiException::class.java)
-                autenticarCuentaGoogle(cuenta.idToken)
+                verificarYAutenticarGoogle(cuenta.idToken, cuenta.email, cuenta.displayName)
             } catch (e: Exception) {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -142,35 +142,72 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun autenticarCuentaGoogle(idToken: String?) {
+    private fun verificarYAutenticarGoogle(idToken: String?, email: String?, displayName: String?) {
+        progressDialog.setMessage("Verificando usuario...")
+        progressDialog.show()
+
+        // Verificar si el correo ya está registrado en Firebase Auth
+        email?.let { correo ->
+            auth.fetchSignInMethodsForEmail(correo)
+                .addOnSuccessListener { resultado ->
+                    if (resultado.signInMethods?.isNotEmpty() == true) {
+                        // El usuario YA existe en Auth, autenticar y verificar BD
+                        autenticarYVerificarBD(idToken)
+                    } else {
+                        // El usuario NO existe en Auth, enviar a Registro SIN autenticar
+                        progressDialog.dismiss()
+
+                        val intent = Intent(this, RegistroActivity::class.java)
+                        intent.putExtra("idToken", idToken)
+                        intent.putExtra("nombre", displayName ?: "")
+                        intent.putExtra("correo", correo)
+                        intent.putExtra("datosDeGoogle", true)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
+                .addOnFailureListener { e ->
+                    progressDialog.dismiss()
+                    Toast.makeText(this, "Error al verificar usuario: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        } ?: run {
+            progressDialog.dismiss()
+            Toast.makeText(this, "No se pudo obtener el correo", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun autenticarYVerificarBD(idToken: String?) {
         val credencial = GoogleAuthProvider.getCredential(idToken, null)
         progressDialog.setMessage("Autenticando...")
-        progressDialog.show()
 
         auth.signInWithCredential(credencial)
             .addOnSuccessListener {
-                progressDialog.dismiss()
-                val usuario=auth.currentUser
+                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
 
-                val intent= Intent(this, RegistroActivity::class.java)
+                // Verificar si el usuario existe en la base de datos
+                referenciBD.child(uid).get()
+                    .addOnSuccessListener { snapshot ->
+                        progressDialog.dismiss()
 
-                //Datos enviados a registro Activity
-                intent.putExtra("uid",usuario?.uid)
-                intent.putExtra("nombre",usuario?.displayName)
-                intent.putExtra("correo",usuario?.email)
-
-                //indicarle a la actividad que son datos de google
-                intent.putExtra("datosDeGoogle",true)
-
-                //Enviar datos a registro activity
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-
-                startActivity(intent)
-
+                        if (snapshot.exists()) {
+                            // Usuario tiene datos en BD, ir al Dashboard
+                            val intent = Intent(this, DashboardActivity::class.java)
+                            startActivity(intent)
+                            finishAffinity()
+                        } else {
+                            // Caso raro: existe en Auth pero no en BD
+                            Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        progressDialog.dismiss()
+                        Toast.makeText(this, "Error al verificar datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
             }
             .addOnFailureListener { e ->
                 progressDialog.dismiss()
-                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error al autenticar: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 }
