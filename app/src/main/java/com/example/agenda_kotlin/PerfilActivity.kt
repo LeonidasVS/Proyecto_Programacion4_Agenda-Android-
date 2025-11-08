@@ -111,8 +111,12 @@ class PerfilActivity : AppCompatActivity() {
     }
 
     private fun cerrarSesion() {
-        progressDialog.dismiss()
         firebaseAuth.signOut()
+
+        Avatar.colorAvatar = null
+        Avatar.letra= null
+        Avatar.imagenUri=null
+
         val intent=Intent(this, MainActivity::class.java)
         startActivity(intent)
         finishAffinity()

@@ -125,6 +125,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
     private val googleSignInActivityResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { resultado ->
@@ -133,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val cuenta = task.getResult(ApiException::class.java)
-                verificarYAutenticarGoogle(cuenta.idToken, cuenta.email, cuenta.displayName)
+                autenticarYVerificarBD(cuenta.idToken, cuenta.email, cuenta.displayName)
             } catch (e: Exception) {
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
@@ -142,62 +143,39 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun verificarYAutenticarGoogle(idToken: String?, email: String?, displayName: String?) {
+    private fun autenticarYVerificarBD(idToken: String?, email: String?, displayName: String?) {
         progressDialog.setMessage("Verificando usuario...")
         progressDialog.show()
 
-        // Verificar si el correo ya está registrado en Firebase Auth
-        email?.let { correo ->
-            auth.fetchSignInMethodsForEmail(correo)
-                .addOnSuccessListener { resultado ->
-                    if (resultado.signInMethods?.isNotEmpty() == true) {
-                        // El usuario YA existe en Auth, autenticar y verificar BD
-                        autenticarYVerificarBD(idToken)
-                    } else {
-                        // El usuario NO existe en Auth, enviar a Registro SIN autenticar
-                        progressDialog.dismiss()
-
-                        val intent = Intent(this, RegistroActivity::class.java)
-                        intent.putExtra("idToken", idToken)
-                        intent.putExtra("nombre", displayName ?: "")
-                        intent.putExtra("correo", correo)
-                        intent.putExtra("datosDeGoogle", true)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
-                        finish()
-                    }
-                }
-                .addOnFailureListener { e ->
-                    progressDialog.dismiss()
-                    Toast.makeText(this, "Error al verificar usuario: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
-        } ?: run {
-            progressDialog.dismiss()
-            Toast.makeText(this, "No se pudo obtener el correo", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun autenticarYVerificarBD(idToken: String?) {
+        // Primero autenticar con Google para obtener el UID
         val credencial = GoogleAuthProvider.getCredential(idToken, null)
-        progressDialog.setMessage("Autenticando...")
 
         auth.signInWithCredential(credencial)
             .addOnSuccessListener {
                 val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
 
-                // Verificar si el usuario existe en la base de datos
+                // Verificar si el usuario ya existe en la base de datos
                 referenciBD.child(uid).get()
                     .addOnSuccessListener { snapshot ->
                         progressDialog.dismiss()
 
                         if (snapshot.exists()) {
-                            // Usuario tiene datos en BD, ir al Dashboard
+                            // Usuario YA existe en BD, ir directamente al Dashboard
                             val intent = Intent(this, DashboardActivity::class.java)
                             startActivity(intent)
                             finishAffinity()
                         } else {
-                            // Caso raro: existe en Auth pero no en BD
-                            Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
+                            // Usuario NO existe en BD, cerrar sesión de Auth y enviar a Registro
+                            auth.signOut()
+
+                            val intent = Intent(this, RegistroActivity::class.java)
+                            intent.putExtra("idToken", idToken)
+                            intent.putExtra("nombre", displayName ?: "")
+                            intent.putExtra("correo", email)
+                            intent.putExtra("datosDeGoogle", true)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
                         }
                     }
                     .addOnFailureListener { e ->
