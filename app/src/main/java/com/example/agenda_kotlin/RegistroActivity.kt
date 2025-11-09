@@ -12,10 +12,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.agenda_kotlin.R
 import com.example.agenda_kotlin.databinding.ActivityRegistroBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+
 
 class RegistroActivity : AppCompatActivity() {
 
@@ -83,13 +85,13 @@ class RegistroActivity : AppCompatActivity() {
     private var password=""
     private var carrera=""
 
-
     private fun validarInformacion() {
         nombres=binding.inputNombre.text.toString().trim()
         apellidos=binding.inputApellido.text.toString().trim()
         correo=binding.inputMail.text.toString().trim()
         password=binding.inputPass.text.toString().trim()
         carrera=binding.spinnerCarrera.text.toString().trim()
+
 
         if(nombres.isEmpty()){
             binding.inputNombre.error="Ingresa un Nombre"
@@ -110,7 +112,7 @@ class RegistroActivity : AppCompatActivity() {
             Toast.makeText(this, "Selecciona una carrera", Toast.LENGTH_SHORT).show()
         }else{
             //Mandar a llamar la funcion para que cree el usuario si todos los campos cumplen
-            registrarUsuarioEmail()
+            validarCorreoExistente()
         }
     }
 
@@ -156,10 +158,38 @@ class RegistroActivity : AppCompatActivity() {
         deshabilitarInput()
     }
 
-
-    private fun registrarUsuarioEmail() {
-        progressDialog.setMessage("Creando Usuario")
+    private fun validarCorreoExistente(){
+        progressDialog.setMessage("Verificando correo...")
         progressDialog.show()
+
+
+        val referencia = FirebaseDatabase.getInstance().getReference("users")
+
+        referencia.orderByChild("correo").equalTo(correo)
+            .addListenerForSingleValueEvent(object : com.google.firebase.database.ValueEventListener {
+                override fun onDataChange(snapshot: com.google.firebase.database.DataSnapshot) {
+                    if (snapshot.exists()) {
+                        progressDialog.dismiss()
+                        binding.inputMail.error = "¡Este correo ya está en uso!"
+                        binding.inputMail.requestFocus()
+                    } else
+                        crearCuentaFirebaseAuth()
+                }
+
+                override fun onCancelled(error: com.google.firebase.database.DatabaseError) {
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        this@RegistroActivity,
+                        "Error al verificar correo: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            })
+    }
+
+
+    private fun crearCuentaFirebaseAuth() {
+        progressDialog.setMessage("Creando Usuario")
 
         firebaseAuth.createUserWithEmailAndPassword(correo, password)
             .addOnCompleteListener {
@@ -167,7 +197,11 @@ class RegistroActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e->
                 progressDialog.dismiss()
-                Toast.makeText(this, "Error al crear cuenta, debido a: ${e.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Error al crear cuenta, debido a: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
@@ -198,6 +232,7 @@ class RegistroActivity : AppCompatActivity() {
         val uid=firebaseAuth.uid
         val correoActual=firebaseAuth.currentUser!!.email
 
+        //Enviar datos a FB
         val enviarDatos=HashMap<String,Any>()
         enviarDatos["uid"]="${uid}"
         enviarDatos["nombre"]="${nombres}"
@@ -212,7 +247,7 @@ class RegistroActivity : AppCompatActivity() {
             .setValue(enviarDatos)
             .addOnCompleteListener {
                 progressDialog.dismiss()
-                Toast.makeText(this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, DashboardActivity::class.java)
                 startActivity(intent)
                 finishAffinity()

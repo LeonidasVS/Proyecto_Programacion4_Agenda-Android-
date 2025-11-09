@@ -39,7 +39,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
         llenarSpinner()
 
         binding.botonActualizarCuenta.setOnClickListener {
-            actualizarUsuario()
+            ActualizarPerfilActivity()
         }
     }
 
@@ -50,7 +50,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
     private var carrera = ""
 
     //Funcion para actualizar los datos del usuario
-    private fun ActualizarPerfilActivity.actualizarUsuario() {
+    private fun ActualizarPerfilActivity(){
         validarCampos()
         if (validarCampos()) {
             val user = fireAuth.currentUser
@@ -72,7 +72,7 @@ class ActualizarPerfilActivity : AppCompatActivity() {
                                 Toast.makeText(this, "Datos actualizados correctamente", Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this, DashboardActivity::class.java)
                                 startActivity(intent)
-                                finish()
+                                finishAffinity()
                             }
                             .addOnFailureListener {
                                 Toast.makeText(this, "Error al actualizar en la base de datos", Toast.LENGTH_SHORT).show()
