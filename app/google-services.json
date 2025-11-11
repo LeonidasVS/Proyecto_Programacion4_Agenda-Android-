@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "327416947965",
+    "firebase_url": "https://proyectoprogramacion4-d307d-default-rtdb.firebaseio.com",
+    "project_id": "proyectoprogramacion4-d307d",
+    "storage_bucket": "proyectoprogramacion4-d307d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:327416947965:android:59cbc284379dd6419a4a94",
+        "android_client_info": {
+          "package_name": "com.example.agenda_kotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "327416947965-ocugjejc0boc52vc1u7lf1b5ltc3fi3f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAlVVGq3SUWyQQ6wEXxau4vV_2L7RF1FA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "327416947965-ocugjejc0boc52vc1u7lf1b5ltc3fi3f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
