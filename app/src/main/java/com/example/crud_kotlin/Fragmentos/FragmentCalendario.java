@@ -110,43 +110,43 @@ public class FragmentCalendario extends Fragment {
         }
 
         String userId = usuario.getUid();
-        Log.d("FragmentCalendario", "Cargando recordatorios para usuario: " + userId);
+        Log.d("DEBUG", "Buscando recordatorios para usuario: " + userId);
 
         db.collection("recordatorios")
                 .whereEqualTo("usuario", userId)
-                .addSnapshotListener((value, error) -> {
-                    if (error != null) {
-                        Log.e("FragmentCalendario", "Error: " + error.getMessage());
-                        return;
-                    }
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listaRecordatorios.clear();
+                        Log.d("DEBUG", "Documentos encontrados: " + task.getResult().size());
 
-                    Log.d("FragmentCalendario", "Snapshot recibido. Documentos: " + (value != null ? value.size() : 0));
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            String docUsuario = doc.getString("usuario");
+                            Log.d("DEBUG", "Documento - Usuario: " + docUsuario + ", Título: " + doc.getString("titulo"));
 
-                    listaRecordatorios.clear();
-
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot doc : value.getDocuments()) {
-                            Recordatorio recordatorio = doc.toObject(Recordatorio.class);
-                            if (recordatorio != null) {
-                                recordatorio.setId(doc.getId());
+                            // Solo agregar si el usuario coincide
+                            if (userId.equals(docUsuario)) {
+                                Recordatorio recordatorio = new Recordatorio(
+                                        doc.getString("titulo") != null ? doc.getString("titulo") : "",
+                                        doc.getString("hora") != null ? doc.getString("hora") : "",
+                                        doc.getString("fecha") != null ? doc.getString("fecha") : "",
+                                        docUsuario != null ? docUsuario : "",
+                                        doc.getString("lugar") != null ? doc.getString("lugar") : "",
+                                        doc.getId()
+                                );
                                 listaRecordatorios.add(recordatorio);
-                                Log.d("FragmentCalendario", "Recordatorio cargado: " + recordatorio.getTitulo() + " - ID: " + doc.getId());
                             }
                         }
+
+                        Log.d("DEBUG", "Total en lista: " + listaRecordatorios.size());
+                        ordenarRecordatoriosLocalmente(listaRecordatorios);
+                        adapter.actualizarLista(listaRecordatorios);
+
+                        if (listaRecordatorios.isEmpty()) {
+                            Toast.makeText(requireContext(), "No tienes recordatorios", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Log.d("FragmentCalendario", "No se encontraron documentos");
-                    }
-
-                    // Ordenar por fecha y hora
-                    ordenarRecordatoriosLocalmente(listaRecordatorios);
-
-                    // Actualizar adapter
-                    adapter.actualizarLista(listaRecordatorios);
-
-                    Log.d("FragmentCalendario", "Total en lista: " + listaRecordatorios.size());
-
-                    if (listaRecordatorios.isEmpty()) {
-                        Toast.makeText(requireContext(), "No tienes recordatorios", Toast.LENGTH_SHORT).show();
+                        Log.e("DEBUG", "Error: ", task.getException());
                     }
                 });
     }
