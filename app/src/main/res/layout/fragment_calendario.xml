@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Fragmentos.FragmentCalendario">
+
+
+
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvCalendario"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:text="Proximos eventos"
+        android:textSize="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
+
+
+
+
+    <!-- Contenedor principal -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/txtVacio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No hay recordatorios"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@android:color/darker_gray"/>
+
+        <!-- RecyclerView sin ScrollView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCalendario"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_list_calendary"
+
+            />
+
+        <!-- FAB flotante -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="Agregar"
+            app:backgroundTint="#03a9f4"
+            app:srcCompat="@drawable/ic_add_calendariy"
+            app:tint="@android:color/white" />
+    </FrameLayout>
+
+
+
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "566791917777",
+    "firebase_url": "https://agendaunab-59d4a-default-rtdb.firebaseio.com",
+    "project_id": "agendaunab-59d4a",
+    "storage_bucket": "agendaunab-59d4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:566791917777:android:d7960ecbb2c161f91a35f0",
+        "android_client_info": {
+          "package_name": "com.example.crud_kotlin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "566791917777-5ofp1ua8620uroon0qatamt9nk1p7uii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.crud_kotlin",
+            "certificate_hash": "ecfdf2a42c94b84bc4e4a4b2348df8e4a92e9a89"
+          }
+        },
+        {
+          "client_id": "566791917777-4vrc82s83qcbi5mdt8rk2m8qkoium7av.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9ODPASyh0JBeIzP4wtLDiITOItBZtSlo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "566791917777-4vrc82s83qcbi5mdt8rk2m8qkoium7av.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

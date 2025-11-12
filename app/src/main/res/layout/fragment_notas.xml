@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DashboardActivity"
+    android:orientation="vertical"
+    android:gravity="center">
+
+
+
+    <FrameLayout
+        android:id="@+id/fragmentoFL"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <!-- RecyclerView sin ScrollView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewNotas"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_note"
+
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            android:contentDescription="Agregar"
+            app:backgroundTint="#03a9f4"
+            app:srcCompat="@drawable/ic_add_calendariy"
+            app:tint="@android:color/white" />
+
+    </FrameLayout>
+
+
+
+</RelativeLayout>

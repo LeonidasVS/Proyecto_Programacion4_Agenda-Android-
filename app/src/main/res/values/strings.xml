@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Agenda StudyPlanner</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="bienvenido">¡Organiza tu dia con StudyPlanner!</string>
+    <string name="descripcion">Una agenda estudiantil diseñada para ayudarte a organizar tareas, clases y exámenes.</string>
+    <string name="login_descripcion">Lleva el control de tus materias, tareas o examenes desde una sola app. ¡Tu potencial es grande!</string>
+    <string name="nombreusuario">Juan Leonidas Villafranco Sibrian</string>
+    <string name="correoElectronico">ejemplo@gmail.com</string>
+    <string name="notas">Notas</string>
+    <string name="recordatorios">Recordatorios</string>
+    <string name="contactos">Contactos</string>
+    <string name="calendario">Calendario</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

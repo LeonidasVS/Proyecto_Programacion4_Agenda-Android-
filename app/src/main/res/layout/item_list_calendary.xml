@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="4dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="#E0E0E0"
+    android:clickable="true"
+    android:id="@+id/cv_Calendar_info">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Contenido Principal -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <!-- Sección de Fecha (Lado Izquierdo) -->
+            <LinearLayout
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:background="@drawable/date_background"
+                android:padding="12dp">
+
+                <TextView
+                    android:id="@+id/tv_month"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OCT"
+                    android:textSize="14sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1"/>
+
+                <TextView
+                    android:id="@+id/tv_day"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="01"
+                    android:textSize="30sp"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp"/>
+
+                <TextView
+                    android:id="@+id/tv_year"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2025"
+                    android:textSize="12sp"
+                    android:textColor="#FFFFFF"
+                    android:alpha="0.9"/>
+
+            </LinearLayout>
+
+            <!-- Sección de Detalles del Evento (Lado Derecho) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <!-- Título del Evento -->
+                <TextView
+                    android:id="@+id/tv_event_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Clase de Fundamentos de Electrónica"
+                    android:textSize="16sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:maxLines="2"
+                    android:ellipsize="end"/>
+
+                <!-- Día de la Semana -->
+                <TextView
+                    android:id="@+id/tv_day_of_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Martes"
+                    android:textSize="14sp"
+                    android:textColor="#000000"
+                    android:layout_marginTop="4dp"/>
+
+                <!-- Horario -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_clock"
+                        android:contentDescription="Hora"
+                        app:tint="#000000" />
+
+                    <TextView
+                        android:id="@+id/tv_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2:00 p.m. - 4:00 p.m."
+                        android:textSize="14sp"
+                        android:textColor="#424242"
+                        android:layout_marginStart="8dp"/>
+
+                </LinearLayout>
+
+                <!-- Lugar -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_location"
+                        android:contentDescription="Ubicación"
+                        app:tint="#000000" />
+
+                    <TextView
+                        android:id="@+id/tv_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Aula B-204"
+                        android:textSize="14sp"
+                        android:textColor="#424242"
+                        android:layout_marginStart="8dp"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_view_details"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:text="Ver Detalles"
+                    android:textAllCaps="false"
+                    android:textColor="#5C6BC0"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    app:iconGravity="end"
+                    app:iconTint="#5C6BC0" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_delete"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="Eliminar"
+                    android:textAllCaps="false"
+                    android:textColor="#E53935"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    app:icon="@drawable/ic_eliminar_cuenta"
+                    app:iconTint="#E53935"
+                    app:iconSize="28dp"
+                    app:iconGravity="start"
+                    android:layout_marginTop="6dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
