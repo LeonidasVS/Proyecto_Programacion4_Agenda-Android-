@@ -6,15 +6,11 @@
         android:title="@string/notas"
         android:icon="@drawable/ic_notas"/>
 
-
-
     <item
         android:id="@+id/item_calendario"
         android:title="@string/calendario"
         android:icon="@drawable/ic_calendario"
         />
-
-
     <item
         android:id="@+id/item_perfil"
         android:title="@string/perfil"

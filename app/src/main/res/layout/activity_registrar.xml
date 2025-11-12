@@ -1,172 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.appcompat.widget.LinearLayoutCompat
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/blanco"
+    android:gravity="center"
     tools:context=".RegistrarActivity">
 
-
-    <LinearLayout
+    <TextView
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:text="@string/crear_cuenta"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/azul" />
 
-        <TextView
-            android:layout_marginTop="40dp"
+    <ImageView
+        android:id="@+id/imgProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="140dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="12dp"
+        android:src="@drawable/img_agregar" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputNombre"
+            android:inputType="textPersonName"
+            style="@style/EstiloInput"
+            android:hint="Nombres"
+            android:drawableStart="@drawable/ic_nombre" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputApellido"
+            style="@style/EstiloInput"
+            android:hint="Apellidos"
+            android:drawableStart="@drawable/ic_apellido" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputMail"
+            style="@style/EstiloInput"
+            android:hint="Correo"
+            android:inputType="textEmailAddress"
+            android:drawableStart="@drawable/ic_mail" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutPassword"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:passwordToggleEnabled="true">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/inputPass"
+            style="@style/EstiloInput"
+            android:hint="Contraseña (mín 6)"
+            android:inputType="textPassword"
+            android:drawableStart="@drawable/ic_contrasena"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layoutCarrera2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:hint="Carrera"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/spinnerCarrera"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Crear Una Cuenta"
-            android:fontFamily="@font/poppins_medium"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:layout_marginBottom="12dp"
-            android:textColor="@color/azul"/>
+            android:inputType="none"
+            android:drawableStart="@drawable/ic_carrera"
+            style="@style/EstiloInput" />
 
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="wrap_content"
-            android:layout_height="140dp"
-            android:layout_gravity="center"
-            android:layout_marginBottom="12dp"
-            android:src="@drawable/img_agregar" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/botonRegistrar"
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        app:cornerRadius="8dp"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="14sp"
+        android:text="Registrarme"
+        android:textColor="@color/blanco"
+        android:backgroundTint="@color/azul"
+        android:layout_height="wrap_content"/>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputNombre"
-                android:inputType="textPersonName"
-                style="@style/EstiloInput"
-                android:hint="Nombres"
-                android:drawableStart="@drawable/ic_nombre" />
-        </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/botonRegistrarConGoogle"
+        android:layout_width="match_parent"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        app:cornerRadius="8dp"
+        android:fontFamily="@font/poppins_medium"
+        android:textSize="14sp"
+        android:text="Registrarme"
+        app:icon="@drawable/ic_google"
+        app:iconGravity="textEnd"
+        android:textColor="@color/blanco"
+        android:backgroundTint="@color/azul"
+        android:layout_height="wrap_content"/>
 
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputApellido"
-                style="@style/EstiloInput"
-                android:hint="Apellidos"
-                android:drawableStart="@drawable/ic_apellido" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputMail"
-                style="@style/EstiloInput"
-                android:hint="Correo"
-                android:inputType="textEmailAddress"
-                android:drawableStart="@drawable/ic_mail" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:passwordToggleEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inputPass"
-                style="@style/EstiloInput"
-                android:hint="Contraseña (mín 6)"
-                android:inputType="textPassword"
-                android:drawableStart="@drawable/ic_contrasena"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp">-->
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/inputCarrera"-->
-<!--                style="@style/EstiloInput"-->
-<!--                android:hint="Carrera"-->
-<!--                android:drawableStart="@drawable/ic_carrera" />-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:id="@+id/layoutCarrera"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp"-->
-<!--            android:hint="Carrera"-->
-<!--            style="@style/EstiloInput"-->
-<!--            android:gravity="start"-->
-
-<!--            >-->
-
-<!--            <Spinner-->
-<!--                android:id="@+id/spinnerCarrera"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@android:color/transparent"-->
-<!--                android:paddingStart="48dp"-->
-
-
-<!--                android:spinnerMode="dropdown"-->
-<!--                style="@style/EstiloInput"/>-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutCarrera2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:hint="Carrera"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/spinnerCarrera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:drawableStart="@drawable/ic_carrera"
-                style="@style/EstiloInput" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-
-<!--        <com.google.android.material.textfield.TextInputLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="8dp">-->
-<!--            <com.google.android.material.textfield.TextInputEditText-->
-<!--                android:id="@+id/inputCiclo"-->
-<!--                style="@style/EstiloInput"-->
-<!--                android:inputType="number"-->
-<!--                android:hint="Ciclo"-->
-<!--                android:drawableStart="@drawable/ic_ciclo" />-->
-<!--        </com.google.android.material.textfield.TextInputLayout>-->
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/botonRegistrar"
-            android:layout_marginTop="50dp"
-            android:layout_width="match_parent"
-            android:layout_marginRight="50dp"
-            android:layout_marginBottom="40dp"
-            android:layout_marginLeft="50dp"
-            app:cornerRadius="8dp"
-            android:fontFamily="@font/poppins_medium"
-            android:textSize="12sp"
-            android:text="Registrarme"
-            android:textColor="@color/blanco"
-            android:backgroundTint="@color/azul"
-            android:layout_height="wrap_content"/>
-
-    </LinearLayout>
-
-</ScrollView>
+</androidx.appcompat.widget.LinearLayoutCompat>

@@ -1,11 +1,13 @@
 package com.example.crud_kotlin
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -22,26 +24,26 @@ import com.google.firebase.database.FirebaseDatabase
 
 class LoginActivity : AppCompatActivity() {
 
-    //Inicializar firebase
-    private lateinit var auth: FirebaseAuth
+    private lateinit var auth:FirebaseAuth
+    private lateinit var binding: ActivityLoginBinding
+    lateinit var referenciBD:DatabaseReference
+    lateinit var progressDialog: ProgressDialog
 
-    //Binding
-    private lateinit var binding:ActivityLoginBinding
-
-    // Para referenciar la base de datos
-    private lateinit var baseReferencia:DatabaseReference
-    private lateinit var googleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = 9001 // Código para identificar la respuesta
+    lateinit var mGoogleSignInClient: GoogleSignInClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
-        //Lamando las variables
         auth=FirebaseAuth.getInstance()
         binding=ActivityLoginBinding.inflate(layoutInflater)
-        baseReferencia = FirebaseDatabase.getInstance().getReference("users")
+        referenciBD=FirebaseDatabase.getInstance().getReference("users")
 
-        enableEdgeToEdge()
+        //Instancia del progressDialog
+        progressDialog=ProgressDialog(this)
+        progressDialog.setTitle("Espere por favor...")
+        progressDialog.setCanceledOnTouchOutside(false)
+
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -49,149 +51,144 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        // Apuntando y obteniendo el id de los input del login
-        val etEmail=findViewById<EditText>(R.id.inputCorreo)
-        val etPassword=findViewById<EditText>(R.id.inputPassword)
-
-        // Boton logearse
         binding.btnLogin.setOnClickListener {
-            val mail=etEmail.text.toString().trim()
-            val password=etPassword.text.toString().trim()
-
-            //Validar que no hayan campos vacios
-            if(mail.isEmpty() || password.isEmpty()){
-                Toast.makeText(this, "Ingrese correo y contraseña", Toast.LENGTH_SHORT).show()
-            }
-            else{
-
-                //Buscar en la base de datos o en el metodo de mail y contraseña de FireBase
-                auth.signInWithEmailAndPassword(mail, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            val uid = auth.currentUser?.uid ?: return@addOnCompleteListener
-
-                            // Obtener datos del usuario desde Realtime Database
-                            baseReferencia.child(uid).get()
-                                .addOnSuccessListener { snapshot ->
-                                    if (snapshot.exists()) {
-                                        // Ir al Dashboard
-                                        val intent = Intent(this, DashboardActivity::class.java)
-                                        startActivity(intent)
-                                        finish()
-                                    } else {
-                                        Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                                .addOnFailureListener {
-                                    Toast.makeText(this, "Error al obtener datos", Toast.LENGTH_SHORT).show()
-                                }
-
-                        } else {
-                            Toast.makeText(this, "Correo o contraseña incorrectos", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-            }
+            iniciarSesionConEmail()
         }
 
-
-        //Metodo del inicio de session con google
+        // Configurar Google Sign-In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id)) // tu web client ID de Firebase
+            .requestIdToken(getString(R.string.id_client_google))
             .requestEmail()
             .build()
 
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-
+        // Evento: iniciar sesión con Google
         binding.btnLoginGoogle.setOnClickListener {
-            googleSignInClient.signOut().addOnCompleteListener {
-                val signInIntent = googleSignInClient.signInIntent
-                startActivityForResult(signInIntent, RC_SIGN_IN)
-            }
+            iniciarSesionConGoogle()
         }
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN) {
+    private var correoUsuario="";
+    private var passwordUsuario=""
+
+    private fun iniciarSesionConEmail() {
+
+        correoUsuario=binding.inputCorreo.text.toString().trim()
+        passwordUsuario=binding.inputPassword.text.toString().trim()
+
+        if(correoUsuario.isEmpty()){
+            binding.inputCorreo.error="Ingresa un correo"
+            binding.inputCorreo.requestFocus()
+        }else if(passwordUsuario.isEmpty() || passwordUsuario.length<6){
+            binding.inputPassword.error="Contraseña mayor a 6 digitos"
+            binding.inputPassword.requestFocus()
+        }else{
+
+            progressDialog.setMessage("Buscando Usuario")
+            progressDialog.show()
+
+            auth.signInWithEmailAndPassword(correoUsuario,passwordUsuario)
+                .addOnCompleteListener{ task ->
+                    if(task.isSuccessful){
+                        val uid=auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                        //Obtener la informacion del usuario
+                        referenciBD.child(uid).get()
+                            .addOnSuccessListener { usuario->
+                                if(usuario.exists()){
+                                    progressDialog.dismiss()
+                                    val intent=Intent(this, DashboardActivity::class.java)
+                                    startActivity(intent)
+                                    finishAffinity()
+                                }else{
+                                    progressDialog.dismiss()
+                                    Toast.makeText(this, "No se encontraron datos del usuario", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                            .addOnFailureListener { e->
+                                progressDialog.dismiss()
+                                Toast.makeText(this, "Error al obtener los datos y ${e.message}", Toast.LENGTH_SHORT).show()
+                            }
+                    }else{
+                        progressDialog.dismiss()
+                        Toast.makeText(this, "Credenciales Incorrectas", Toast.LENGTH_SHORT).show()
+                    }
+                }
+        }
+    }
+
+    //Inicio de sesion de google
+    private fun iniciarSesionConGoogle(){
+        // Cerrar sesión de Google para forzar la selección de cuenta
+        mGoogleSignInClient.signOut().addOnCompleteListener(this) {
+            val googleSignIntent = mGoogleSignInClient.signInIntent
+            googleSignInActivityResultLauncher.launch(googleSignIntent)
+        }
+    }
+
+
+    private val googleSignInActivityResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { resultado ->
+        if (resultado.resultCode == RESULT_OK) {
+            val data = resultado.data
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
-                val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
-            } catch (e: ApiException) {
-                Toast.makeText(this, "Error Google Sign-In: ${e.message}", Toast.LENGTH_SHORT).show()
+                val cuenta = task.getResult(ApiException::class.java)
+                autenticarYVerificarBD(cuenta.idToken, cuenta.email, cuenta.displayName)
+            } catch (e: Exception) {
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
+        } else {
+            Toast.makeText(this, "Inicio de sesión cancelado", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        val auth = FirebaseAuth.getInstance()
+    private fun autenticarYVerificarBD(idToken: String?, email: String?, displayName: String?) {
+        progressDialog.setMessage("Verificando usuario...")
+        progressDialog.show()
 
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    val uid = user?.uid
+        // Primero autenticar con Google para obtener el UID
+        val credencial = GoogleAuthProvider.getCredential(idToken, null)
 
-                    if (uid == null) {
-                        Toast.makeText(this, "Error: UID nulo", Toast.LENGTH_SHORT).show()
-                        Log.e("FirebaseAuth", "UID es nulo después del inicio de sesión.")
-                        return@addOnCompleteListener
+        auth.signInWithCredential(credencial)
+            .addOnSuccessListener {
+                val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
+
+                // Verificar si el usuario ya existe en la base de datos
+                referenciBD.child(uid).get()
+                    .addOnSuccessListener { snapshot ->
+                        progressDialog.dismiss()
+
+                        if (snapshot.exists()) {
+                            // Usuario YA existe en BD, ir directamente al Dashboard
+                            val intent = Intent(this, DashboardActivity::class.java)
+                            startActivity(intent)
+                            finishAffinity()
+                        } else {
+                            // Usuario NO existe en BD, cerrar sesión de Auth y enviar a Registro
+                            auth.signOut()
+
+                            val intent = Intent(this, RegistrarActivity::class.java)
+                            intent.putExtra("idToken", idToken)
+                            intent.putExtra("nombre", displayName ?: "")
+                            intent.putExtra("correo", email)
+                            intent.putExtra("datosDeGoogle", true)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
-
-                    val database = FirebaseDatabase.getInstance().reference.child("users")
-
-                    database.child(uid).get()
-                        .addOnSuccessListener { snapshot ->
-                            if (snapshot.exists()) {
-                                Toast.makeText(this, "Bienvenido de nuevo", Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this, DashboardActivity::class.java))
-                            } else {
-                                val registro = Registro(
-                                    nombre = user.displayName ?: "Sin nombre",
-                                    email = user.email ?: "Sin correo"
-                                )
-
-                                database.child(uid).setValue(registro)
-                                    .addOnSuccessListener {
-                                        Toast.makeText(this, "Debes completar el registro", Toast.LENGTH_SHORT).show()
-                                        startActivity(Intent(this, RegistrarActivity::class.java))
-                                    }
-                                    .addOnFailureListener {
-                                        Log.e("FirebaseAuth", "Error guardando datos", it)
-                                        Toast.makeText(this, "Error guardando datos", Toast.LENGTH_SHORT).show()
-                                    }
-                            }
-                        }
-                        .addOnFailureListener {
-                            Log.e("FirebaseAuth", "Error verificando usuario", it)
-                            Toast.makeText(this, "Error verificando usuario", Toast.LENGTH_SHORT).show()
-                        }
-                } else {
-                    Log.e("FirebaseAuth", "Error en signInWithCredential", task.exception)
-                    Toast.makeText(this, "Error Firebase Auth Google", Toast.LENGTH_SHORT).show()
-                }
+                    .addOnFailureListener { e ->
+                        progressDialog.dismiss()
+                        Toast.makeText(this, "Error al verificar datos: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener { e ->
+                progressDialog.dismiss()
+                Toast.makeText(this, "Error al autenticar: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
-
-
-
-
-    fun checkEmailExists(email: String, onResult: (exists: Boolean, errorMsg: String?) -> Unit) {
-        auth.fetchSignInMethodsForEmail(email)
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    val signInMethods = task.result?.signInMethods
-                    val exists = !signInMethods.isNullOrEmpty()
-                    onResult(exists, null)
-                } else {
-                    onResult(false, task.exception?.localizedMessage ?: "Error desconocido")
-                }
-            }
-    }
-
-
-
 }

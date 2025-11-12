@@ -142,9 +142,6 @@ public class FragmentCalendario extends Fragment {
                         ordenarRecordatoriosLocalmente(listaRecordatorios);
                         adapter.actualizarLista(listaRecordatorios);
 
-                        if (listaRecordatorios.isEmpty()) {
-                            Toast.makeText(requireContext(), "No tienes recordatorios", Toast.LENGTH_SHORT).show();
-                        }
                     } else {
                         Log.e("DEBUG", "Error: ", task.getException());
                     }

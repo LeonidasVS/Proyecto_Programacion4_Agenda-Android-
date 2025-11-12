@@ -13,7 +13,11 @@
     <string name="notas">Notas</string>
     <string name="perfil">Perfil</string>
     <string name="calendario">Calendario</string>
+    <!-- Titulo Registro Activity -->
+    <string name="crear_cuenta">Crear una Cuenta</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="id_client_google">206286813779-95qp7kh7l3lr0r1dup5c952ide4mej7p.apps.googleusercontent.com</string>
 
 </resources>

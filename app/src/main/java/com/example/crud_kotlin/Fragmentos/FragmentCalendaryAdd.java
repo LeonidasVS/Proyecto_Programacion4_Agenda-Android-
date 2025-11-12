@@ -31,6 +31,8 @@ public class FragmentCalendaryAdd extends Fragment {
     private EditText etTitulo, etLocation;
     private TextView etHora, etFecha;
     private Button btnGuardar;
+
+    private Button cancelarNota;
     private FirebaseFirestore db;
 
     @Override
@@ -42,10 +44,12 @@ public class FragmentCalendaryAdd extends Fragment {
         etFecha = view.findViewById(R.id.textViewFecha);
         etLocation = view.findViewById(R.id.et_location);
         btnGuardar = view.findViewById(R.id.btn_save);
+        cancelarNota = view.findViewById(R.id.btn_cancel);
 
         db = FirebaseFirestore.getInstance();
 
         btnGuardar.setOnClickListener(v -> guardarRecordatorio());
+        cancelarNota.setOnClickListener(v -> volverAtras());
         configurarPickers();
 
         return view;
@@ -137,5 +141,9 @@ public class FragmentCalendaryAdd extends Fragment {
         etHora.setText("");
         etFecha.setText("");
         etLocation.setText("");
+    }
+
+    private void volverAtras() {
+        requireActivity().getSupportFragmentManager().popBackStack();
     }
 }

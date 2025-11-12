@@ -7,26 +7,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DashboardActivity"
-    android:orientation="vertical"
+    android:background="@color/blanco"
     android:gravity="center">
 
-
+    <TextView
+        android:id="@+id/tvNotas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="20dp"
+        android:text="Notas De Usuarios"
+        android:textSize="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textStyle="bold" />
 
     <FrameLayout
         android:id="@+id/fragmentoFL"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_below="@id/tvNotas"
+        android:layout_marginTop="12dp"> <!-- Espacio entre el TextView y el FrameLayout -->
 
-
-
-        <!-- RecyclerView sin ScrollView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewNotas"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_note"
-
-            />
+            tools:listitem="@layout/item_note" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_add_note"
@@ -40,7 +46,5 @@
             app:tint="@android:color/white" />
 
     </FrameLayout>
-
-
 
 </RelativeLayout>

@@ -69,12 +69,15 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnRegistrar.setOnClickListener {
-            startActivity(Intent(applicationContext, RegistrarActivity::class.java))
+            val intent=Intent(applicationContext, RegistrarActivity::class.java)
+//            intent.putExtra("ocultar_boton", true); //ocultar el boton
+            startActivity(intent)
         }
 
         binding.btnLogin.setOnClickListener {
-            startActivity(Intent(this, LoginActivity::class.java))
-            finish()
+            val intent=Intent(applicationContext, LoginActivity::class.java)
+//            intent.putExtra("ocultar_boton", true); //ocultar el boton
+            startActivity(intent)
         }
     }
 

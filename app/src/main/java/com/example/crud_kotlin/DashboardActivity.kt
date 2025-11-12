@@ -3,6 +3,7 @@ package com.example.crud_kotlin
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,17 +14,19 @@ import com.example.crud_kotlin.Fragmentos.FragmentPerfil
 import com.example.crud_kotlin.Objetos.Avatar
 import com.example.crud_kotlin.databinding.ActivityDashboardBinding
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityDashboardBinding
+    private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityDashboardBinding.inflate(layoutInflater)
-
+        firebaseAuth = FirebaseAuth.getInstance()
         enableEdgeToEdge()
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -49,14 +52,6 @@ class DashboardActivity : AppCompatActivity() {
                 else -> false
             }
         }
-//
-//        binding.btnConfiguracion.setOnClickListener {
-//            startActivity(Intent(applicationContext, PerfilActivity::class.java))
-//        }
-//
-//        binding.btnPerfil.setOnClickListener {
-//            startActivity(Intent(applicationContext, PerfilActivity::class.java))
-//        }
 
         circulName()
 
@@ -64,7 +59,6 @@ class DashboardActivity : AppCompatActivity() {
         verFragmentonote()
         binding.bottomNV.selectedItemId = R.id.item_nota
     }
-
 
     private fun circulName() {
 
@@ -82,6 +76,7 @@ class DashboardActivity : AppCompatActivity() {
 
                 // Ocultar el botón de texto (avatar por letra)
                 binding.btnPerfil.visibility = View.GONE
+                binding.btnConfiguracion.visibility=View.VISIBLE
             }
         } else {
             // Obtener la primera letra del email
@@ -92,9 +87,9 @@ class DashboardActivity : AppCompatActivity() {
             binding.btnPerfil.text = Avatar.letra
 
             // Generar color aleatorio solo si no existe
-            if (Avatar.color == null) {
+            if (Avatar.colorAvatar == null) {
                 val random = java.util.Random()
-                Avatar.color = android.graphics.Color.rgb(
+                Avatar.colorAvatar = android.graphics.Color.rgb(
                     random.nextInt(256),
                     random.nextInt(256),
                     random.nextInt(256)
@@ -104,25 +99,23 @@ class DashboardActivity : AppCompatActivity() {
             // Crear un drawable circular con el color del avatar
             val drawable = android.graphics.drawable.GradientDrawable()
             drawable.shape = android.graphics.drawable.GradientDrawable.OVAL
-            drawable.setColor(Avatar.color!!)
+            drawable.setColor(Avatar.colorAvatar!!)
 
             // Asignar el drawable como fondo del TextView
             binding.btnPerfil.background = drawable
 
             // Ocultar el ImageView del perfil
             binding.btnConfiguracion.visibility = View.GONE
+            binding.btnPerfil.visibility = View.VISIBLE
         }
 
     }
 
 
-
-
-
-
     private fun verFragmentonote(){
-        binding.tvTitulo.text = "Notas de Usuario"
 
+        binding.tvTitulo.text = "Notas de Usuario"
+        circulName()
         val fragment_note = FragmentNotas()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.fragmentoFL.id, fragment_note, "Notas de Usuario")
@@ -130,18 +123,24 @@ class DashboardActivity : AppCompatActivity() {
     }
 
     private fun verFragmentoCalendario(){
+
         binding.tvTitulo.text = "Calendario"
+        circulName()
 
         val fragment_calendario = FragmentCalendario()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.fragmentoFL.id, fragment_calendario, "Frgment PErfil")
         fragmentTransaction.commit()
+
     }
 
 
     private fun verFragmentoPerfil(){
-        binding.tvTitulo.text = "Perfil Usuario"
 
+        binding.btnPerfil.visibility=View.GONE
+        binding.btnConfiguracion.visibility=View.GONE
+
+        binding.tvTitulo.text = ""
         val fragment_perfil = FragmentPerfil()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.fragmentoFL.id, fragment_perfil, "Fragment Perfil")

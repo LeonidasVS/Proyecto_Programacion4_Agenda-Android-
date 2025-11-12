@@ -66,7 +66,6 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation("com.google.android.material:material:1.10.0")
 
-
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.firestore)

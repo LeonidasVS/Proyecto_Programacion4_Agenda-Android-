@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@color/blanco"
-    tools:context=".Fragmentos.FragmentPerfil">
+    android:layout_height="match_parent"
+    tools:context=".Fragmentos.FragmentPerfil"
+    android:background="@color/blanco">
+
 
     <TextView
-        android:text="Cuenta De Usuario"
-        android:fontFamily="@font/poppins_semibold"
-        android:textAlignment="center"
-        android:textStyle="bold"
-        android:textSize="22sp"
-        android:textColor="@color/azul"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Perfil de Usuario"
+        android:textAlignment="center"
+        android:textColor="@color/azul"
+        android:textSize="22dp"
+        android:textStyle="bold" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,8 +37,7 @@
             android:textColor="@color/blanco"
             android:gravity="center"
             android:text="A"
-            android:textSize="50sp"
-            android:background="@drawable/circle_background"/>
+            android:textSize="80dp"/>
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ImagePerfil"
@@ -43,7 +46,7 @@
             android:layout_marginTop="-110dp"
             android:scaleType="centerCrop"
             android:clickable="true"
-            android:visibility="gone"
+            android:visibility="visible"
             app:shapeAppearanceOverlay="@style/CircularImage" />
 
         <TextView
@@ -89,7 +92,7 @@
         android:gravity="center">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnEditarPerfil"
+            android:id="@+id/btn_Editar_perfil"
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:drawableEnd="@drawable/ic_editar"
@@ -97,7 +100,7 @@
             android:textColor="@color/black"
             android:backgroundTint="@color/blanco"
             android:fontFamily="@font/poppins_semibold"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:textStyle="bold"
             app:cornerRadius="4dp" />
 
@@ -111,12 +114,12 @@
             android:fontFamily="@font/poppins_semibold"
             android:text="Eliminar Cuenta"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:textStyle="bold"
             app:cornerRadius="4dp" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/cerrarSesion"
+            android:id="@+id/btn_cerrarSesion"
             android:layout_width="325dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
@@ -124,9 +127,8 @@
             android:drawableEnd="@drawable/ic_cerrar_sesion"
             android:fontFamily="@font/poppins_semibold"
             android:text="Cerrar Sesion"
-            android:textColor="@color/white"
             android:textSize="16sp"
             app:cornerRadius="8dp" />
 
     </LinearLayout>
-</LinearLayout>
+</androidx.appcompat.widget.LinearLayoutCompat>

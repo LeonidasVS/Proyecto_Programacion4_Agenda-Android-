@@ -21,10 +21,6 @@
         <activity
             android:name=".DashboardActivity"
             android:exported="false" />
-        <activity
-            android:name=".PerfilActivity"
-            android:exported="false" />
-        <activity android:name=".ActualizarActivity" />
         <activity android:name=".RegistrarActivity" />
         <activity android:name=".LoginActivity" />
         <activity
