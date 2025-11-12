@@ -6,21 +6,18 @@
         android:title="@string/notas"
         android:icon="@drawable/ic_notas"/>
 
-    <item
-        android:id="@+id/item_recordatorios"
-        android:title="@string/recordatorios"
-        android:icon="@drawable/ic_recordatorios"
-        />
 
-    <item
-        android:id="@+id/item_contactos"
-        android:title="@string/contactos"
-        android:icon="@drawable/ic_contacto"
-        />
 
     <item
         android:id="@+id/item_calendario"
         android:title="@string/calendario"
         android:icon="@drawable/ic_calendario"
+        />
+
+
+    <item
+        android:id="@+id/item_perfil"
+        android:title="@string/perfil"
+        android:icon="@drawable/ic_nombre"
         />
 </menu>

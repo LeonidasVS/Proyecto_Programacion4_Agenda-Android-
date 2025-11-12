@@ -1,27 +1,19 @@
 package com.example.crud_kotlin
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.crud_kotlin.Fragmentos.FragmentCalendario
-import com.example.crud_kotlin.Fragmentos.FragmentContacto
 import com.example.crud_kotlin.Fragmentos.FragmentNotas
-import com.example.crud_kotlin.Fragmentos.FragmentRecordatorio
-import com.example.crud_kotlin.Modelos.Registro
+import com.example.crud_kotlin.Fragmentos.FragmentPerfil
 import com.example.crud_kotlin.Objetos.Avatar
 import com.example.crud_kotlin.databinding.ActivityDashboardBinding
-import com.example.crud_kotlin.databinding.ActivityMainBinding
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
 import com.squareup.picasso.Picasso
-import kotlin.random.Random
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -46,29 +38,25 @@ class DashboardActivity : AppCompatActivity() {
                     verFragmentonote()
                     true
                 }
-                R.id.item_recordatorios -> {
-                    verFragmentoRecordatorio()
-                    true
-                }
-                R.id.item_contactos -> {
-                    verFragmentoContacto()
-                    true
-                }
                 R.id.item_calendario -> {
                     verFragmentoCalendario()
+                    true
+                }
+                R.id.item_perfil -> {
+                    verFragmentoPerfil()
                     true
                 }
                 else -> false
             }
         }
-
-        binding.btnConfiguracion.setOnClickListener {
-            startActivity(Intent(applicationContext, PerfilActivity::class.java))
-        }
-
-        binding.btnPerfil.setOnClickListener {
-            startActivity(Intent(applicationContext, PerfilActivity::class.java))
-        }
+//
+//        binding.btnConfiguracion.setOnClickListener {
+//            startActivity(Intent(applicationContext, PerfilActivity::class.java))
+//        }
+//
+//        binding.btnPerfil.setOnClickListener {
+//            startActivity(Intent(applicationContext, PerfilActivity::class.java))
+//        }
 
         circulName()
 
@@ -128,26 +116,9 @@ class DashboardActivity : AppCompatActivity() {
     }
 
 
-    private fun verFragmentoNotas(){
-        binding.tvTitulo.text = "Notas"
 
-        //Volver a la dashboard principal
-        val intent = Intent(this, DashboardActivity::class.java).apply {
-            // Si ya existe una instancia en la pila, la trae y limpia la de encima
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        }
-        startActivity(intent)
-        true
-    }
 
-    private fun verFragmentoRecordatorio(){
-        binding.tvTitulo.text = "Recordatorios"
 
-        val fragment_recordatorio = FragmentRecordatorio()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFL.id, fragment_recordatorio, "Recordatorios")
-        fragmentTransaction.commit()
-    }
 
     private fun verFragmentonote(){
         binding.tvTitulo.text = "Notas de Usuario"
@@ -158,21 +129,22 @@ class DashboardActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    private fun verFragmentoContacto(){
-        binding.tvTitulo.text = "Contacto"
-
-        val fragment_contacto = FragmentContacto()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFL.id, fragment_contacto, "Frgment PErfil")
-        fragmentTransaction.commit()
-    }
-
     private fun verFragmentoCalendario(){
         binding.tvTitulo.text = "Calendario"
 
         val fragment_calendario = FragmentCalendario()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction.replace(binding.fragmentoFL.id, fragment_calendario, "Frgment PErfil")
+        fragmentTransaction.commit()
+    }
+
+
+    private fun verFragmentoPerfil(){
+        binding.tvTitulo.text = "Perfil Usuario"
+
+        val fragment_perfil = FragmentPerfil()
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction.replace(binding.fragmentoFL.id, fragment_perfil, "Fragment Perfil")
         fragmentTransaction.commit()
     }
 }

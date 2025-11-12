@@ -48,14 +48,23 @@ public class FragmentCalendario extends Fragment {
 
         // Configurar RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new RecordatorioAdapter(getContext(), new ArrayList<>());
+        adapter = new RecordatorioAdapter(getContext(), listaRecordatorios); // Pasar la lista real
         recyclerView.setAdapter(adapter);
 
         // Configurar listeners
-        adapter.setOnEliminarRecordatorioListener(this::eliminarRecordatorio);
-        configurarFAB();
+        adapter.setOnRecordatorioClickListener(new RecordatorioAdapter.OnRecordatorioClickListener() {
+            @Override
+            public void onEditarRecordatorio(Recordatorio recordatorio) {
+                editarRecordatorio(recordatorio);
+            }
 
-        // Cargar datos
+            @Override
+            public void onEliminarRecordatorio(Recordatorio recordatorio) {
+                eliminarRecordatorio(recordatorio);
+            }
+        });
+
+        configurarFAB();
         cargarRecordatorios();
 
         return view;
@@ -80,6 +89,19 @@ public class FragmentCalendario extends Fragment {
         }
     }
 
+    private void editarRecordatorio(Recordatorio recordatorio) {
+        try {
+            FragmentCalendaryEdit fragmentEdit = FragmentCalendaryEdit.newInstance(recordatorio);
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.fragmentoFL, fragmentEdit)
+                    .addToBackStack("calendario")
+                    .commit();
+        } catch (Exception e) {
+            Toast.makeText(requireContext(), "Error al editar recordatorio", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void cargarRecordatorios() {
         FirebaseUser usuario = FirebaseAuth.getInstance().getCurrentUser();
         if (usuario == null) {
@@ -88,6 +110,7 @@ public class FragmentCalendario extends Fragment {
         }
 
         String userId = usuario.getUid();
+        Log.d("FragmentCalendario", "Cargando recordatorios para usuario: " + userId);
 
         db.collection("recordatorios")
                 .whereEqualTo("usuario", userId)
@@ -97,25 +120,32 @@ public class FragmentCalendario extends Fragment {
                         return;
                     }
 
-                    List<Recordatorio> nuevaLista = new ArrayList<>();
+                    Log.d("FragmentCalendario", "Snapshot recibido. Documentos: " + (value != null ? value.size() : 0));
 
-                    if (value != null) {
+                    listaRecordatorios.clear();
+
+                    if (value != null && !value.isEmpty()) {
                         for (DocumentSnapshot doc : value.getDocuments()) {
                             Recordatorio recordatorio = doc.toObject(Recordatorio.class);
                             if (recordatorio != null) {
                                 recordatorio.setId(doc.getId());
-                                nuevaLista.add(recordatorio);
+                                listaRecordatorios.add(recordatorio);
+                                Log.d("FragmentCalendario", "Recordatorio cargado: " + recordatorio.getTitulo() + " - ID: " + doc.getId());
                             }
                         }
+                    } else {
+                        Log.d("FragmentCalendario", "No se encontraron documentos");
                     }
 
                     // Ordenar por fecha y hora
-                    ordenarRecordatoriosLocalmente(nuevaLista);
+                    ordenarRecordatoriosLocalmente(listaRecordatorios);
 
                     // Actualizar adapter
-                    adapter.actualizarLista(nuevaLista);
+                    adapter.actualizarLista(listaRecordatorios);
 
-                    if (nuevaLista.isEmpty()) {
+                    Log.d("FragmentCalendario", "Total en lista: " + listaRecordatorios.size());
+
+                    if (listaRecordatorios.isEmpty()) {
                         Toast.makeText(requireContext(), "No tienes recordatorios", Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -145,7 +175,7 @@ public class FragmentCalendario extends Fragment {
                             .addOnSuccessListener(aVoid -> {
                                 AlarmUtils.INSTANCE.cancelarAlarma(requireContext(), recordatorio);
                                 Toast.makeText(requireContext(), "Recordatorio eliminado", Toast.LENGTH_SHORT).show();
-                                cargarRecordatorios();
+                                // No necesitas recargar porque el snapshotListener se actualiza automáticamente
                             })
                             .addOnFailureListener(e -> {
                                 Toast.makeText(requireContext(), "Error al eliminar", Toast.LENGTH_SHORT).show();
@@ -158,6 +188,6 @@ public class FragmentCalendario extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        cargarRecordatorios();
+        cargarRecordatorios(); // Forzar recarga al volver
     }
 }

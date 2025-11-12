@@ -155,17 +155,22 @@
                 android:gravity="center">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_view_details"
+                    android:id="@+id/btn_editar"
                     style="@style/Widget.Material3.Button.TextButton"
-                    android:layout_width="100dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Ver Detalles"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:text="Editar"
                     android:textAllCaps="false"
-                    android:textColor="#5C6BC0"
+                    android:textColor="#0F2DD0"
                     android:textStyle="bold"
                     android:textSize="14sp"
-                    app:iconGravity="end"
-                    app:iconTint="#5C6BC0" />
+                    app:icon="@drawable/ic_editar"
+                    app:iconTint="#4735E5"
+                    app:iconSize="28dp"
+                    app:iconGravity="start"
+                    android:layout_marginTop="6dp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_delete"

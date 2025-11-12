@@ -6,15 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.crud_kotlin.Modelos.Recordatorio;
 import com.example.crud_kotlin.R;
 import com.google.android.material.button.MaterialButton;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -25,7 +21,7 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
 
     private List<Recordatorio> lista;
     private Context context;
-    private OnEliminarRecordatorioListener listener;
+    private OnRecordatorioClickListener listener;
 
     public RecordatorioAdapter(Context context, List<Recordatorio> lista) {
         this.context = context;
@@ -35,11 +31,21 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
         }
     }
 
-    public interface OnEliminarRecordatorioListener {
+    public interface OnRecordatorioClickListener {
+        void onEditarRecordatorio(Recordatorio recordatorio);
         void onEliminarRecordatorio(Recordatorio recordatorio);
     }
 
-    public void setOnEliminarRecordatorioListener(OnEliminarRecordatorioListener listener) {
+    public void setOnRecordatorioClickListener(OnRecordatorioClickListener listener) {
+        this.listener = listener;
+    }
+
+    // MÉTODOS DEPRECADOS - MANTENER POR COMPATIBILIDAD
+    public void setOnEliminarRecordatorioListener(OnRecordatorioClickListener listener) {
+        this.listener = listener;
+    }
+
+    public void setOnEditarRecordatorioListener(OnRecordatorioClickListener listener) {
         this.listener = listener;
     }
 
@@ -50,15 +56,19 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
         return new RecordatorioViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull RecordatorioViewHolder holder, int position) {
         Recordatorio r = lista.get(position);
-        if (r == null) return;
+        if (r == null) {
+            Log.e("ADAPTER", "Recordatorio NULL en posición: " + position);
+            return;
+        }
 
-        // Procesar fecha
+        Log.d("ADAPTER", "Mostrando posición " + position + ": " + r.getTitulo());
+
         FechaProcesada fp = procesarFecha(r.getFecha());
 
-        // Configurar vistas
         holder.tvDay.setText(fp.dayNumber != null ? fp.dayNumber : "--");
         holder.tvMonth.setText(fp.month != null ? fp.month : "--");
         holder.tvYear.setText(fp.year != null ? fp.year : "--");
@@ -67,14 +77,15 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
         holder.tvHora.setText(r.getHora() != null ? r.getHora() : "");
         holder.tvTitulo.setText(r.getTitulo() != null ? r.getTitulo() : "Sin título");
 
-        // Botones
-        holder.btnViewDetails.setOnClickListener(v ->
-                Toast.makeText(context, "Detalle: " + r.getTitulo(), Toast.LENGTH_SHORT).show()
-        );
-
         holder.btnDelete.setOnClickListener(v -> {
             if (listener != null) {
                 listener.onEliminarRecordatorio(r);
+            }
+        });
+
+        holder.btnEdit.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onEditarRecordatorio(r);
             }
         });
     }
@@ -86,7 +97,7 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
 
     public static class RecordatorioViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitulo, tvHora, tvDay, tvMonth, tvYear, tvDayOfWeek, tvLocation;
-        MaterialButton btnViewDetails, btnDelete;
+        MaterialButton btnDelete, btnEdit;
 
         public RecordatorioViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,8 +108,8 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
             tvYear = itemView.findViewById(R.id.tv_year);
             tvDayOfWeek = itemView.findViewById(R.id.tv_day_of_week);
             tvLocation = itemView.findViewById(R.id.tv_location);
-            btnViewDetails = itemView.findViewById(R.id.btn_view_details);
             btnDelete = itemView.findViewById(R.id.btn_delete);
+            btnEdit = itemView.findViewById(R.id.btn_editar);
         }
     }
 
@@ -107,12 +118,10 @@ public class RecordatorioAdapter extends RecyclerView.Adapter<RecordatorioAdapte
         try {
             SimpleDateFormat formatoEntrada = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             Date fecha = formatoEntrada.parse(fechaTexto);
-
             fp.dayOfWeek = new SimpleDateFormat("EEEE", new Locale("es", "ES")).format(fecha);
             fp.dayNumber = new SimpleDateFormat("dd", Locale.getDefault()).format(fecha);
             fp.month = new SimpleDateFormat("MMM", new Locale("es", "ES")).format(fecha);
             fp.year = new SimpleDateFormat("yyyy", Locale.getDefault()).format(fecha);
-
         } catch (Exception e) {
             fp.dayOfWeek = "---";
             fp.dayNumber = "--";
